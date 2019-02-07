@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace StreamerClientExample
+﻿namespace ClientCsharp
 {
+    using System;
+    using System.Collections.Generic;
+
     public class InstrumentQuote
     {
         public string Id { get; set; }
