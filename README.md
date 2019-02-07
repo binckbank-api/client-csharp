@@ -3,4 +3,15 @@ This is a simple example on how to connect to the Binck realtime update platform
 
 The platform is written using [SignalR](https://docs.microsoft.com/en-us/aspnet/core/tutorials/signalr?tabs=visual-studio&view=aspnetcore-2.2)
 
-Before running this example, make sure you add an active Bearer token in Program.cs, together with the account.
+After cloning or downloading this repo, make sure you add an active Bearer token in `Program.cs`, together with the account number:
+
+```csharp
+private const string AccessToken = "YOUR-ACCESS-TOKEN";
+private const string AccountNumber = "YOUR-ACCOUNT-NUMBER";
+```
+
+To obtain an access token to the platform please refer to the [documentation here](https://github.com/binckbank-api/client-js#logon-to-binck-api-using-oauth2)
+
+The example will subscribe to the news feed for the country to which the account number belongs and to the last quotes for the AEX index as an example.
+
+
