@@ -14,4 +14,17 @@ To obtain an access token to the platform please refer to the [documentation her
 
 The example will subscribe to the news feed for the country to which the account number belongs and to the last quotes for the AEX index as an example.
 
+```csharp
+// Start the connection to the streamer
+await hubConnection.StartAsync();
 
+// Subscribe to the news feed
+await hubConnection.InvokeAsync("SubscribeNews", 
+   AccountNumber);
+
+// Subscribe to an instrument quotes 
+await hubConnection.InvokeAsync("SubscribeQuotes", 
+   AccountNumber, 
+   new[] { AEXIndex }, 
+   "TopOfBook");
+```
