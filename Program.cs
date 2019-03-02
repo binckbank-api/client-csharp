@@ -5,9 +5,9 @@
     using Microsoft.AspNetCore.SignalR.Client;
     using Microsoft.Extensions.Logging;
 
-    public class Program
+    public static class Program
     {
-        private const string AEXIndex = "eM1X1";
+        private const string AexIndex = "eM1X1";
         private const string AccessToken = "YOUR-ACCESS-TOKEN";
         private const string AccountNumber = "YOUR-ACCOUNT-NUMBER";
         private const string StreamerUrl = "https://realtime.sandbox.binck.com/stream/v1";
@@ -22,29 +22,47 @@
                 .ConfigureLogging(logging => { logging.AddConsole(); })
                 .Build();
 
+            hubConnection.On<Order>("OrderStatus", n =>
+            {
+                Console.WriteLine($"OrderStatus: {n.AccountNumber} ### {n.Number}");
+            });
+
+            hubConnection.On<Order>("OrderModified", n =>
+            {
+                Console.WriteLine($"OrderModified: {n.AccountNumber} ### {n.Number}");
+            });
+
+            hubConnection.On<Order>("OrderExecution", n =>
+            {
+                Console.WriteLine($"OrderExecution: {n.AccountNumber} ### {n.Number}");
+            });
 
             hubConnection.On<NewsHead>("News", n =>
             {
-                Console.WriteLine($"{n.Dt} ### {n.Head}");
+                Console.WriteLine($"News: {n.Dt} ### {n.Head}");
             });
 
             hubConnection.On<InstrumentQuote>("Quote", q =>
             {
                 q.Qt.ForEach(x =>
-                        Console.WriteLine($"{x.Dt} ### AEX {x.Typ} {x.Prc}"));
+                        Console.WriteLine($"Quote: {x.Dt} ### AEX {x.Typ} {x.Prc}"));
             });
 
             // Start the connection to the streamer
             await hubConnection.StartAsync();
 
+            // Subscribe to the order events feed
+            await hubConnection.InvokeAsync("SubscribeOrders", 
+                AccountNumber);
+
             // Subscribe to the news feed
             await hubConnection.InvokeAsync("SubscribeNews", 
                 AccountNumber);
 
-            // Subscribe to an instrument quotes 
+            // Subscribe to instrument quotes 
             await hubConnection.InvokeAsync("SubscribeQuotes", 
                 AccountNumber, 
-                new[] { AEXIndex }, 
+                new[] { AexIndex }, 
                 "TopOfBook");
 
             Console.ReadLine();

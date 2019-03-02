@@ -15,7 +15,7 @@
     {
         public string Msg { get; set; }
         public string Typ { get; set; }
-        public double Prc { get; set; }
+        public decimal Prc { get; set; }
         public DateTime Dt { get; set; }
         public int Vol { get; set; }
     }
