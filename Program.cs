@@ -8,44 +8,51 @@
     public static class Program
     {
         private const string AexIndex = "eM1X1";
-        private const string AccessToken = "YOUR-ACCESS-TOKEN";
+        private const string BearerToken = "YOUR-ACCESS-TOKEN";
         private const string AccountNumber = "YOUR-ACCOUNT-NUMBER";
         private const string StreamerUrl = "https://realtime.sandbox.binck.com/stream/v1";
         
-        public static async Task Main(string[] args)
+        public static async Task Main()
         {
-            var hubConnection = new HubConnectionBuilder()
+            if (BearerToken == "YOUR-ACCESS-TOKEN")
+            {
+                throw new ArgumentException("Enter a valid access token.");
+            }
+
+            HubConnection hubConnection = new HubConnectionBuilder()
                 .WithUrl(StreamerUrl,
                     options =>
-                        options.AccessTokenProvider = () => Task.FromResult(AccessToken)
+                        options.AccessTokenProvider = () => Task.FromResult(BearerToken)
                 )
                 .ConfigureLogging(logging => { logging.AddConsole(); })
                 .Build();
 
-            hubConnection.On<Order>("OrderStatus", n =>
+            hubConnection.On<OrderModel>("OrderStatus", n =>
             {
                 Console.WriteLine($"OrderStatus: {n.AccountNumber} ### {n.Number}");
             });
 
-            hubConnection.On<Order>("OrderModified", n =>
+            hubConnection.On<OrderModel>("OrderModified", n =>
             {
                 Console.WriteLine($"OrderModified: {n.AccountNumber} ### {n.Number}");
             });
 
-            hubConnection.On<Order>("OrderExecution", n =>
+            hubConnection.On<OrderModel>("OrderExecution", n =>
             {
                 Console.WriteLine($"OrderExecution: {n.AccountNumber} ### {n.Number}");
             });
 
-            hubConnection.On<NewsHead>("News", n =>
+            hubConnection.On<NewsMessageModel>("News", n =>
             {
-                Console.WriteLine($"News: {n.Dt} ### {n.Head}");
+                Console.WriteLine($"News: {n.PublishedDateTime} ### {n.Headline}");
             });
 
-            hubConnection.On<InstrumentQuote>("Quote", q =>
+            hubConnection.On<QuoteListModel>("Quote", q =>
             {
-                q.Qt.ForEach(x =>
-                        Console.WriteLine($"Quote: {x.Dt} ### AEX {x.Typ} {x.Prc}"));
+                foreach (QuoteModel quote in q.Quotes)
+                {
+                    Console.WriteLine($"Quote: {quote.QuoteDateTime} ### AEX {quote.QuoteType} {quote.Price}");
+                }
             });
 
             // Start the connection to the streamer
