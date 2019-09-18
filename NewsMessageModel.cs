@@ -2,11 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using Newtonsoft.Json;
 
     /// <summary>
     ///     The news message
     /// </summary>
+    [Obfuscation(Feature = "preserve-name-binding")]
+    [Obfuscation(Feature = "preserve-identity")]
     public class NewsMessageModel
     {
         /// <summary>

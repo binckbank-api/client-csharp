@@ -1,11 +1,14 @@
 ﻿namespace ClientCsharp
 {
     using System;
+    using System.Reflection;
     using Newtonsoft.Json;
 
     /// <summary>
     ///     The order update
     /// </summary>
+    [Obfuscation(Feature = "preserve-name-binding")]
+    [Obfuscation(Feature = "preserve-identity")]
     public class OrderModel
     {
         /// <summary>
@@ -69,8 +72,15 @@
         public string ReferenceId { get; set; }
     }
 
+    /// <summary>
+    ///     Instrument for which the order has been placed
+    /// </summary>
     public class InstrumentModel
     {
+        /// <summary>
+        ///     Instrument id
+        /// </summary>
+        [JsonProperty(PropertyName = "id", Required = Required.Always)]
         public string Id { get; set; }
     }
 }

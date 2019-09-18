@@ -2,12 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
     /// <summary>
     ///     Quote list
     /// </summary>
+    [Obfuscation(Feature = "preserve-name-binding")]
+    [Obfuscation(Feature = "preserve-identity")]
     public class QuoteListModel
     {
         /// <summary>
@@ -36,6 +39,9 @@
         public DateTime SubmissionDateTime { get; set; }
     }
 
+    /// <summary>
+    ///     The new quotes for this instrument
+    /// </summary>
     public class QuoteModel
     {
         /// <summary>

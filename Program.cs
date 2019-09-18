@@ -8,10 +8,10 @@
     public static class Program
     {
         private const string AexIndex = "eM1X1";
-        private const string BearerToken = "YOUR-ACCESS-TOKEN";
-        private const string AccountNumber = "YOUR-ACCOUNT-NUMBER";
-        private const string StreamerUrl = "https://realtime.sandbox.binck.com/stream/v1";
-        
+        private const string BearerToken = "YOUR-ACCESS-TOKEN"; // Only token, no prefix "Bearer "
+        private const string AccountNumber = "YOUR-ACCOUNT-NUMBER"; // Not the IBAN, but the number in the GET /accounts response
+        private const string StreamerUrl = "https://realtime.sandbox.binck.com/stream/v1";  // For production use https://realtime.binck.com/stream/v1
+
         public static async Task Main()
         {
             if (BearerToken == "YOUR-ACCESS-TOKEN")
@@ -56,21 +56,43 @@
             });
 
             // Start the connection to the streamer
-            await hubConnection.StartAsync();
+            try
+            {
+                await hubConnection.StartAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 
-            // Subscribe to the order events feed
-            await hubConnection.InvokeAsync("SubscribeOrders", 
-                AccountNumber);
+            if (hubConnection.State == HubConnectionState.Disconnected)
+            {
+                Console.WriteLine(
+                    "Connection is not active. Per token only one session is allowed. Could that be the reason?");
+            }
+            else
+            {
+                try
+                {
+                    // Subscribe to the order events feed
+                    await hubConnection.InvokeAsync("SubscribeOrders",
+                        AccountNumber);
 
-            // Subscribe to the news feed
-            await hubConnection.InvokeAsync("SubscribeNews", 
-                AccountNumber);
+                    // Subscribe to the news feed
+                    await hubConnection.InvokeAsync("SubscribeNews",
+                        AccountNumber);
 
-            // Subscribe to instrument quotes 
-            await hubConnection.InvokeAsync("SubscribeQuotes", 
-                AccountNumber, 
-                new[] { AexIndex }, 
-                "TopOfBook");
+                    // Subscribe to instrument quotes 
+                    await hubConnection.InvokeAsync("SubscribeQuotes",
+                        AccountNumber,
+                        new[] { AexIndex },
+                        "TopOfBook");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
             Console.ReadLine();
         }
