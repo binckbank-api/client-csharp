@@ -43,9 +43,9 @@
         public DateTime PublishedDateTime { get; set; }
 
         /// <summary>
-        ///     The instruments for which this news message contains news (if any)
+        ///     [Optional] The instruments for which this news message contains news (if any)
         /// </summary>
-        [JsonProperty(PropertyName = "iids", Required = Required.Always)]
+        [JsonProperty(PropertyName = "iids", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<string> Instruments { get; set; }
     }
 }

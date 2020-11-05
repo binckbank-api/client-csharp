@@ -7,7 +7,7 @@
 
     public static class Program
     {
-        private const string AexIndex = "eM1X1";
+        private const string DaxIndex = "b6OQR";
         private const string BearerToken = "YOUR-ACCESS-TOKEN"; // Only token, no prefix "Bearer "
         private const string AccountNumber = "YOUR-ACCOUNT-NUMBER"; // Not the IBAN, but the number in the GET /accounts response
         private const string StreamerUrl = "https://realtime.sandbox.binck.com/stream/v1";  // For production use https://realtime.binck.com/stream/v1
@@ -51,7 +51,7 @@
             {
                 foreach (QuoteModel quote in q.Quotes)
                 {
-                    Console.WriteLine($"Quote: {quote.QuoteDateTime} ### AEX {quote.QuoteType} {quote.Price}");
+                    Console.WriteLine($"Quote: {quote.QuoteDateTime} ### DAX {quote.QuoteType} {quote.Price}");
                 }
             });
 
@@ -85,7 +85,7 @@
                     // Subscribe to instrument quotes 
                     await hubConnection.InvokeAsync("SubscribeQuotes",
                         AccountNumber,
-                        new[] { AexIndex },
+                        new[] { DaxIndex },
                         "TopOfBook");
                 }
                 catch (Exception ex)
